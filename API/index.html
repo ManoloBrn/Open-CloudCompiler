@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>  
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <link rel="stylesheet" href="">
+    <script src="langs.js"></script>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" href="css/editor.css">
+    <link rel="stylesheet" href="css/foundation.css">
+    <script src="js/vendor/modernizr.js"></script>
+</head>
+
+
+<body>
+    <header id="header" >
+        <h1>CompiUAM</h1>
+    </header><!-- /header -->
+    
+	<p>
+		CompiUAM is an open source compiler, it has been build  for the Universidad Autonoma Metropolitana-Acaptozalco
+	</p>
+	
+    <!-- <label>Lenguage <a href="#" id="langhelp">(list)</a>:</label> -->
+    <div class="row">
+    <div class="large-12 columns">
+      <label>Language
+        <select id="langid">
+          <option value="4">JavaScript</option>
+          <option value="7">C/C++</option>
+          <option value="6">Go</option>
+          <option value="3">PHP</option>
+          <option value="1">Ruby</option>
+          <option value="0">Python</option>
+         
+        </select>
+      </label>
+    </div>
+  </div>
+    
+   
+    <label>Code:</label>
+   <div id="editor">function foo(items) {
+    var x = "All this is syntax highlighted";
+    return x;
+}
+   </textarea></div>
+    
+
+    <input type="button" value="Compile" id="send">
+    <p class="output" id="output">Output appears here</p>
+    <hr>
+    <h3>Tests</h3>
+    <input type="button" value="Test All Languages" id="testAll">
+
+
+    <p id="testsoutput" class="output">Output of all tests appear here<br><br>
+    </p>
+
+     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+    <script src="/ace-builds/src/ace.js" type="text/javascript" charset="utf-8"></script>
+    <script>
+    //Default style code
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+    </script>
+   
+
+
+    <script type="text/javascript">
+    $("#langid").on('click', function(){
+        var lan_id = ["python","ruby",,"php","javascript",,"golang","c_cpp"];
+        var editor = ace.edit("editor");
+        var lan = lan_id[$('#langid').val()];
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/"+lan);
+
+    });
+
+     
+
+    //COMPILE USER GIVEN CODE
+    $('#send').on('click', function() {
+        var langid = $('#langid').val();
+        var codeF = editor.getValue();
+        var stdin = $('#stdin').val();
+       
+        var json = {
+            language: langid,
+            code: codeF,
+            stdin:stdin
+        };
+        console.log(json);
+
+        $.post("/compile", json, function(data, error, xhr) {
+
+            document.getElementById("output").innerHTML = data.output;
+        });
+    });
+
+    </script>
+    <script src="js/vendor/jquery.js"></script>
+    <script src="js/foundation.min.js"></script>
+    <script>
+    $(document).foundation();
+    </script>
+    
+</body>
+
+</html>
